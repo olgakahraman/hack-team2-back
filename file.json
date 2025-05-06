@@ -1,25 +1,66 @@
 [
   {
-    "title": "Salesforce-MTS Internship",
-    "link": "...",
-    "visited": false,
-    "applied": true,
-    "notes": "",
-    "date_applied": "Mon May 05 2025"
-  },
-  {
-    "title": "De Shaw MTS Role",
-    "link": "...",
-    "visited": false,
-    "applied": true,
-    "notes": "",
-    "date_applied": "Mon May 05 2025"
-  },
-  {
-    "title": "Copac tech limited",
-    "link": "...",
-    "visited": true,
+    "job_title": "Technical Support Specialist",
+    "date_posted": "2025-04-25",
+    "employer": "TechNova Solutions",
+    "views": 145,
+    "requirements": [
+      "1+ years experience in IT support",
+      "CompTIA A+ certification",
+      "Strong communication skills"
+    ],
     "applied": false,
-    "notes": ""
+    "viewed": false
+  },
+  {
+    "job_title": "Junior Cybersecurity Analyst",
+    "date_posted": "2025-04-30",
+    "employer": "SecureNet Inc.",
+    "views": 208,
+    "requirements": [
+      "Knowledge of network protocols",
+      "Experience with SIEM tools",
+      "Bachelor's degree or equivalent experience"
+    ],
+    "applied": true,
+    "viewed": false
+  },
+  {
+    "job_title": "IT Help Desk Technician",
+    "date_posted": "2025-05-02",
+    "employer": "Innovatech Corp",
+    "views": 96,
+    "requirements": [
+      "Customer service experience",
+      "Familiar with Windows and macOS",
+      "Ability to troubleshoot hardware issues"
+    ],
+    "applied": false,
+    "viewed": false
+  },
+  {
+    "job_title": "Systems Administrator (Entry-Level)",
+    "date_posted": "2025-04-20",
+    "employer": "BrightLayer Systems",
+    "views": 312,
+    "requirements": [
+      "Linux/Windows server experience",
+      "Scripting knowledge (Bash or PowerShell)",
+      "Willing to work on-call rotation"
+    ],
+    "applied": true
+  },
+  {
+    "job_title": "IT Support Analyst - Remote",
+    "date_posted": "2025-05-01",
+    "employer": "CloudLink Services",
+    "views": 189,
+    "requirements": [
+      "Remote troubleshooting skills",
+      "VPN and endpoint security knowledge",
+      "Strong documentation habits"
+    ],
+    "applied": false,
+    "viewed": false
   }
 ]

@@ -1,77 +1,139 @@
-const express = require('express'); 
-const bodyparser = require('body-parser');
-const fs = require('fs');
-let file ='file.json';
-
-let app = express();
-
-app.set('view engine', 'ejs');
-app.use(bodyparser.json());
-
-app.get('/', (req, res) =>{
-    fs.readFile(file,(err, data)=>{
-        if(err) return res.send(err);
-        let source=JSON.parse(data);
-        source=source.filter(co=>!co.visited)
-        if (source.length) {
-            const index = Math.floor(Math.random() * source.length);
-            const ind = source[index];
-            res.render('index', ind);
-        } else {
-            res.render('index', { title: null });
-        }
-    })
-})
-
-app.post('/applied', (req, res)=>{
-    fs.readFile(file,(err,data)=>{
-        if(err) return res.send(err);
-        let source=JSON.parse(data);
-        source=source.map(job=>{
-            if(job.title===req.body.title){
-                job.applied=true;
-                job.date_applied=new Date().toDateString();
-            }
-            return job
-        })
-        let str=JSON.stringify(source,null,2);
-        fs.writeFile(file, str, (err)=>{
-            if(err) return console.log(err);
-            res.sendStatus(200);
-        })
-    })
-})
-
-app.post('/saw', (req, res)=>{
-    fs.readFile(file,(err,data)=>{
-        if(err) return res.send(err);
-        let source=JSON.parse(data);
-        source=source.map(job=>{
-            if(job.title===req.body.title){
-                job.visited=true;
-            }
-            return job
-        })
-        let str=JSON.stringify(source,null,2);
-        fs.writeFile(file, str, (err)=>{
-            if(err) return console.log(err);
-            res.sendStatus(200);
-        })
-    })
-})
-
-app.get('/applied',(req, res)=>{
-    fs.readFile(file,(err,data)=>{
-        if(err) return console.log(err);
-        let source=JSON.parse(data);
-        source=source.filter(co=>co.applied);
-        res.render('applied', {applied:source})
-    })
-})
-
-app.use(express.static('public'));
-
+const fs = require('fs')
+const app = require('express')();
 const port = process.env.PORT ||8000
+const JOB_LISTINGS_FILE = './file.json'
+
+app.get('/GETJobListings/:id', (req, res) => {
+    console.log("req: ", req.params);
+    const { id } = req.params;
+    fs.readFile(JOB_LISTINGS_FILE, (error, data) => {
+        if (error) {
+            res.status(500).send({
+                reply: "SERVER ERROR! couldn't load listings",
+                payload: error
+            });
+        } else {
+            if (id === null || id === undefined) {
+                res.status(200).send({
+                    reply: "listings retrieved!",
+                    payload: JSON.parse(data)
+                });
+            } else {
+                const numericId = parseInt(id, 10); // Convert id to a number
+                if (!isNaN(numericId)) {
+                    const listings = JSON.parse(data);
+                    const listing = listings[numericId];
+                    if (listing) {
+                        res.status(200).send({
+                            reply: "listing " + numericId + " retrieved!",
+                            payload: listing
+                        });
+                    } else {
+                        res.status(404).send({
+                            reply: "listing not found",
+                            payload: null
+                        });
+                    }
+                } else {
+                    res.status(400).send({
+                        reply: "Invalid ID format",
+                        payload: null
+                    });
+                }
+            }
+        }
+    });
+});
+
+app.post('/SETJobviewed/:id', (req, res) => {
+    const { id } = req.params;
+    fs.readFile(JOB_LISTINGS_FILE, (error, data) => {
+        if (error) {
+            res.status(500).send({
+                reply: "SERVER ERROR! couldn't load listings",
+                payload: error
+            });
+        } else {
+            const listings = JSON.parse(data);
+            const listing = listings[id];
+            if (listing) {
+                listing.viewed = true;
+                fs.writeFile(JOB_LISTINGS_FILE, JSON.stringify(listings), (err) => {
+                    if (err) {
+                        res.status(500).send({
+                            reply: "SERVER ERROR! couldn't update listing",
+                            payload: err
+                        });
+                    } else {
+                        res.status(200).send({
+                            reply: "viewed "+listing.title,
+                            payload: listing
+                        });
+                    }
+                });
+            } else {
+                res.status(404).send({
+                    reply: "listing not found",
+                    payload: null
+                });
+            }
+        }
+    });
+})
+
+app.post('/SETJobApplied/:id', (req, res) => {
+    const { id } = req.params;
+    fs.readFile(JOB_LISTINGS_FILE, (error, data) => {
+        if (error) {
+            res.status(500).send({
+                reply: "SERVER ERROR! couldn't load listings",
+                payload: error
+            });
+        } else {
+            const listings = JSON.parse(data);
+            const listing = listings[id];
+            if (listing) {
+                listing.applied = true;
+                fs.writeFile(JOB_LISTINGS_FILE, JSON.stringify(listings), (err) => {
+                    if (err) {
+                        res.status(500).send({
+                            reply: "SERVER ERROR! couldn't update listing",
+                            payload: err
+                        });
+                    } else {
+                        res.status(200).send({
+                            reply: "applied to "+listing.title,
+                            payload: listing
+                        });
+                    }
+                });
+            } else {
+                res.status(404).send({
+                    reply: "listing not found",
+                    payload: null
+                });
+            }
+        }
+    });
+})
+
+app.get('/GETJobListings', (req, res) => {
+    fs.readFile(JOB_LISTINGS_FILE, (error, data) => {
+        if (error) {
+            res.status(500).send({
+                reply: "SERVER ERROR! couldn't load listings",
+                payload: error
+            });
+        } else {
+
+                res.status(200).send({
+                    reply: "listings retrieved!",
+                    payload: JSON.parse(data)
+                });
+        }
+    });
+});
+
 app.listen(port,()=>{
     console.log('listening on port '+"http://localhost:"+port);
 })
